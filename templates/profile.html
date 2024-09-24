@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <script>
+        const currentUrl = new URL(window.location.href);
+        const param = currentUrl.searchParams.get('offset');
+        if (param == null)
+            currentUrl.searchParams.set('offset', 0);
+
+        window.addEventListener('load', () => {
+            checkOffset();
+        });
+
+        const checkOffset = () => {
+            if (param == null || param == 0)
+            {
+                let buttonBack = document.getElementById('back');
+                buttonBack.setAttribute('disabled', true);
+            }
+            {% if games["data"]|length < 5 %}
+                let buttonNext = document.getElementById('next');
+                buttonNext.setAttribute('disabled', true);
+            {% endif %}
+        }
+
+        function NextGamePage(){
+            const param = +currentUrl.searchParams.get('offset') + 5;
+            console.log(param)
+            currentUrl.searchParams.set('offset', param);
+            window.location.href = currentUrl
+        }
+
+        function PrevGamePage(){
+            const param = +currentUrl.searchParams.get('offset') - 5;
+            console.log(param)
+            currentUrl.searchParams.set('offset', param);
+            window.location.href = currentUrl
+        }
+    </script>
+{% endblock %}
+
+{% block content %}
+    <h1 class="text-6xl text-center">Статистика пользователя</h1>
+    <table class="mx-auto mt-5 text-3xl">
+        <thead>
+            <tr>
+                <th class="px-5 py-3 border-4 border-slate-800">Игрок</th>
+                <th class="px-5 py-3 border-4 border-slate-800">Всего убийств</th>
+                <th class="px-5 py-3 border-4 border-slate-800">Всего выстрелов</th>
+                <th class="px-5 py-3 border-4 border-slate-800">Всего игр</th>
+                <th class="px-5 py-3 border-4 border-slate-800 bg-yellow-200">Максимум очков</th>
+            </tr>
+        </thead>
+        <tbody class="text-center">
+            <tr>
+                <td class="py-5 border-4 border-slate-800">{{ user["data"].username }}</td>
+                <td class="py-5 border-4 border-slate-800">{{ user["data"].all_kills }}</td>
+                <td class="py-5 border-4 border-slate-800">{{ user["data"].all_shots }}</td>
+                <td class="py-5 border-4 border-slate-800">{{ user["data"].games }}</td>
+                <td class="py-5 border-4 border-slate-800 font-bold bg-yellow-200">{{ user["data"].high_score }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <h1 class="text-6xl text-center">Сыгранные матчи</h1>
+    <table class="mx-auto mt-5 text-3xl">
+        <thead>
+            <tr>
+                <th class="px-5 py-3 border-4 border-slate-800">ID Матча</th>
+                <th class="px-5 py-3 border-4 border-slate-800">Дата</th>
+                <th class="px-5 py-3 border-4 border-slate-800">Длительность</th>
+                <th class="px-5 py-3 border-4 border-slate-800">Врагов убито</th>
+                <th class="px-5 py-3 border-4 border-slate-800">Выстрелы игрока</th>
+                <th class="px-5 py-3 border-4 border-slate-800">Всего выстрелов</th>
+                <th class="px-5 py-3 border-4 border-slate-800">Очков набрано</th>
+            </tr>
+        </thead>
+        <tbody class="text-center">
+            {% for game in games["data"] %}
+                <tr>
+                    <td class="py-5 border-4 border-slate-800">{{ game.game_id }}</td>
+                    <td class="py-5 border-4 border-slate-800">{{ game.game_date }}</td>
+                    <td class="py-5 border-4 border-slate-800">{{ game.game_time }}</td>
+                    <td class="py-5 border-4 border-slate-800">{{ game.player_kill }}</td>
+                    <td class="py-5 border-4 border-slate-800">{{ game.player_shot }}</td>
+                    <td class="py-5 border-4 border-slate-800">{{ game.all_shot }}</td>
+                    <td class="py-5 border-4 border-slate-800">{{ game.player_score }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="text-3xl text-center">
+        <button class="mr-5" id="back" onclick="PrevGamePage()">Назад</button>
+        <button id="next" onclick="NextGamePage()">Далее</button>
+    </div>
+{% endblock %}

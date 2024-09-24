@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+    <h1 class="text-6xl text-center">Рейтинг игроков</h1>
+    <table class="mx-auto mt-5 text-3xl">
+        <thead>
+            <tr>
+                <th class="px-5 py-3 border-4 border-slate-800">Игрок</th>
+                <th class="px-5 py-3 border-4 border-slate-800">Всего убийств</th>
+                <th class="px-5 py-3 border-4 border-slate-800">Всего выстрелов</th>
+                <th class="px-5 py-3 border-4 border-slate-800">Всего игр</th>
+                <th class="px-5 py-3 border-4 border-slate-800 bg-yellow-200">Максимум очков</th>
+            </tr>
+        </thead>
+        <tbody class="text-center">
+            {% for player in players["data"] %}
+                <tr>
+                    <td class="py-5 border-4 border-slate-800"><a href="/pages/profile/{{ player.user_id }}">{{ player.username }}</a></td>
+                    <td class="py-5 border-4 border-slate-800">{{ player.all_kills }}</td>
+                    <td class="py-5 border-4 border-slate-800">{{ player.all_shots }}</td>
+                    <td class="py-5 border-4 border-slate-800">{{ player.games }}</td>
+                    <td class="py-5 border-4 border-slate-800 font-bold bg-yellow-200">{{ player.high_score }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

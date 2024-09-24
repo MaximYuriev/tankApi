@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.addEventListener('load', () => {
+            searchCookie();
+        });
+        const searchCookie = () =>{
+            if ({{ session }})
+            {
+                let element = document.getElementById("account");
+                element.classList.remove('hidden')
+                element.classList.toggle('inline-block')
+            }
+            else
+            {
+                let element = document.getElementById("auth");
+                element.className = ''
+            }
+        }
+        function ClickDropDownMenu(){
+            const element = document.getElementById("dropdown-content")
+            if (element.classList.contains('hidden'))
+            {
+                element.classList.remove('hidden');
+                element.classList.toggle('block');
+            }
+            else
+            {
+                element.classList.remove('block');
+                element.classList.toggle('hidden');
+            }
+        }
+        const clickLogout = async () =>{
+            response = await fetch("http://localhost:8000/auth/logout")
+            window.location.reload()
+        }
+    </script>
+    {% block head %}{% endblock %}
+    <title>Танки</title>
+</head>
+<body>
+    <nav class="flex justify-between pb-3 text-3xl my-3 border-b-2">
+        <ul class="flex ml-10">
+            <li>
+                <a href="/pages/home">Танки</a>
+            </li>
+        </ul>
+        <ul class="flex gap-5 mr-10">
+            <li>
+                <a href="/pages/rating">Рейтинг</a>
+            </li>
+            <li id="VarLi">
+                <a href="/pages/auth" id="auth" class="hidden">Вход</a>
+                <div class="hidden relative" id="account">
+                    <button onclick="ClickDropDownMenu()">Профиль</button>
+                    <div id="dropdown-content" class="hidden absolute bg-gray-100 min-w-32 z-5 text-2xl text-center">
+                        <a class="block py-2 hover:bg-gray-200" href="/pages/profile">Аккаунт</a>
+                        <a class="block py-2 hover:bg-gray-200" href="/pages/settings">Настройки</a>
+                        <a class="block py-2 hover:bg-gray-200 hover:cursor-pointer" onclick="clickLogout()">Выход</a>
+                    </div>
+                </div>
+
+            </li>
+        </ul>
+    </nav>
+    <div id="content">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

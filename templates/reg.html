@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <script>
+        window.addEventListener('submit', () => {
+                event.preventDefault();
+                handleSubmit();
+        });
+
+        const handleSubmit = async () =>{
+            loginFromInput = document.getElementById('login').value;
+            usernameFromInput = document.getElementById('username').value;
+            passwordFromInput = document.getElementById('password').value;
+            passwordrepFromInput = document.getElementById('passwordrepeat').value;
+            if (passwordFromInput == passwordrepFromInput){
+                const values = {
+                    'login': loginFromInput,
+                    'password': passwordFromInput,
+                    'username': usernameFromInput
+                }
+                const response = await fetch("http://localhost:8000/auth/registration", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(values)
+                })
+                if (response.status == 200)
+                    console.log("Пользователь зареган")
+            }
+            else
+                console.log("Пароли не совпадают")
+        }
+    </script>
+{% endblock %}
+
+{% block content %}
+<form class="text-3xl mx-auto max-w-fit" id="authform">
+    <h1 class="text-5xl pb-9 text-center">Регистрация</h1>
+
+    <label for="login">Логин:</label>
+    <input id="login" class="block mb-5 border-2" type="text" placeholder="Введите логин" required>
+
+    <label for="username">Имя игрока:</label>
+    <input id="username" class="block mb-5 border-2" type="text" placeholder="Введите игровое имя" required>
+
+    <label for="password">Пароль:</label>
+    <input id="password" class="block mb-3 border-2" type="password" placeholder="Введите пароль" required>
+
+    <label for="passwordrepeat">Повторите пароль:</label>
+    <input id="passwordrepeat" class="block mb-3 border-2" type="password" placeholder="Повторите пароль" required>
+
+    <div class="text-center">
+        <button type="submit" class="rounded-md bg-stone-600 hover:bg-stone-700 text-3xl mt-5 text-white font-medium px-5 py-2.5 mx-auto">Регистрация</button>
+    </div>
+</form>
+{% endblock %}

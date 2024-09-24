@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <script>
+        window.addEventListener('submit', () => {
+            event.preventDefault();
+            handleSubmit();
+        });
+
+        const handleSubmit = async () =>{
+            loginFromInput = document.getElementById('login').value;
+            passwordFromInput = document.getElementById('password').value;
+            const values = {
+                'login': loginFromInput,
+                'password': passwordFromInput,
+                'desktop_status': false
+            }
+            const response = await fetch("http://localhost:8000/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(values)
+            })
+            if (response.status == 200)
+                window.location.href = '/pages/home';
+        }
+
+        function RedirectOnRegistration(){
+            window.location.href = '/pages/reg'
+        }
+    </script>
+{% endblock %}
+
+{% block content %}
+    <form class="text-3xl mx-auto max-w-fit" id="authform">
+        <h1 class="text-5xl pb-9">Вход в аккаунт</h1>
+
+        <label for="login">Логин:</label>
+        <input id="login" class="block mb-5 border-2" type="text" placeholder="Введите логин" required>
+
+        <label for="password">Пароль:</label>
+        <input id="password" class="block mb-3 border-2" type="password" placeholder="Введите пароль" required>
+
+        <button type="submit" class="rounded-md bg-stone-600 hover:bg-stone-700 text-3xl mt-5 text-white font-medium px-5 py-2.5 inline-flex">Вход</button>
+        <button type="button" class="rounded-md bg-zinc-600 hover:bg-zinc-700 text-3xl mt-5 text-white font-medium px-5 py-2.5 inline-flex" onclick="RedirectOnRegistration()">Регистрация</button>
+    </form>
+
+{% endblock %}
