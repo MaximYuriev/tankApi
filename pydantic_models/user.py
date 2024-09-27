@@ -10,12 +10,6 @@ class SignInUser(BaseModel):
     password: str
     desktop_status: bool = False
 
-class UserEdit(SignUpUser):
-    login: str|None = None
-    username: str|None = None
-    password: str|None = None
-    email: str|None = None
-
 class UserStatDTO(BaseModel):
     username: str
     high_score: int|None

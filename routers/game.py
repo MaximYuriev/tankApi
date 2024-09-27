@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, status, Response
+from fastapi import APIRouter
 from fastapi.params import Depends
 
 from db.database import get_session
@@ -11,7 +11,8 @@ from schemas.game import Game
 from schemas.user import User
 from schemas.user import Session as SignInSession
 from routers.auth import find_session_on_db
-from utils.exceptions import iternal_server_error, user_not_found, session_not_exist
+from routers.user import check_user_existing_by_id
+from utils.exceptions import iternal_server_error, session_not_exist
 from pydantic_models.game import GameData, GameDTO
 from pydantic_models.user import UserStatDTO, UserRateDTO
 
@@ -19,12 +20,6 @@ from fastapi_cache.decorator import cache
 
 game_router = APIRouter(prefix='/game', tags=['Game'])
 
-async def check_user_existing_by_id(user_id:int, db_session:Session = Depends(get_session)):
-    query = select(User).where(User.user_id == user_id)
-    user = await db_session.scalar(query)
-    if user is None:
-        return False
-    return True
 
 @game_router.post('/add')
 async def add_new_game_data(data:GameData, session:Annotated[SignInSession,Depends(find_session_on_db)], db:Session=Depends(get_session)):
@@ -49,9 +44,7 @@ async def add_new_game_data(data:GameData, session:Annotated[SignInSession,Depen
 
 @game_router.get('/profile/{user_id}')
 @cache(expire=30)
-async def get_user_statistics_by_id(user_id:int,check_user_exist:Annotated[bool,Depends(check_user_existing_by_id)], db:Session = Depends(get_session)):
-    if not check_user_exist:
-        raise user_not_found
+async def get_user_statistics_by_id(user_id:Annotated[int,Depends(check_user_existing_by_id)], db:Session = Depends(get_session)):
     query = (
         select(
             User.username,
@@ -67,13 +60,11 @@ async def get_user_statistics_by_id(user_id:int,check_user_exist:Annotated[bool,
     res = await db.execute(query)
     result_orm = res.first()
     result_dto = UserStatDTO.model_validate(result_orm, from_attributes=True)
-    return {"detail":"Данные успешно добавлены","data":result_dto}
+    return {"detail":"Данные о пользователе","data":result_dto}
 
 @game_router.get('/profile/{user_id}/games')
 @cache(expire=30)
-async def get_users_games_by_id(user_id:int, check_user_exist:Annotated[bool,Depends(check_user_existing_by_id)], db:Session = Depends(get_session),offset:int = 0):
-    if not check_user_exist:
-        raise user_not_found
+async def get_users_games_by_id(user_id:Annotated[int,Depends(check_user_existing_by_id)], db:Session = Depends(get_session),offset:int = 0):
     query = (
         select(Game)
         .where(Game.user_id == user_id)
@@ -84,7 +75,7 @@ async def get_users_games_by_id(user_id:int, check_user_exist:Annotated[bool,Dep
     res = await db.execute(query)
     result_orm = res.scalars().all()
     result_dto = [GameDTO.model_validate(row, from_attributes=True) for row in result_orm]
-    return {"detail":"Данные о пользователе","data":result_dto}
+    return {"detail":"Игры пользователя","data":result_dto}
 
 
 @game_router.get('/rating')

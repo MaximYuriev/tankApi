@@ -14,11 +14,11 @@ import uuid
 from schemas.user import User
 from schemas.user import Session as SignInSession
 from pydantic_models.user import SignUpUser, SignInUser
+from config import COOKIES_KEY_NAME
 
 from utils.exceptions import login_is_not_unique, username_is_not_unique, not_user_ex, session_not_exist, iternal_server_error
 
 auth_router = APIRouter(prefix='/auth',tags=['Auth'])
-COOKIES_KEY_NAME = 'web-app-session-id'
 
 
 def password_hash(password:str) -> str:
