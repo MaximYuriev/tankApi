@@ -49,3 +49,33 @@ def get_reg_page(request: Request, session_flag:Annotated[int,Depends(session_ex
     if not session_flag:
         return templates.TemplateResponse("reg.html", {"request": request,"session":session_flag})
     return RedirectResponse("/pages/profile")
+
+@page_router.get("/settings")
+def get_settings_page(session_flag:Annotated[int,Depends(session_exist)]):
+    if not session_flag:
+        return RedirectResponse("/pages/auth")
+    return RedirectResponse("/pages/settings/lgn")
+
+@page_router.get("/settings/lgn")
+def get_edit_login_page(request: Request, session_flag:Annotated[int,Depends(session_exist)]):
+    if not session_flag:
+        return RedirectResponse("/pages/auth")
+    return templates.TemplateResponse("ed_log.html", {"request": request,"session":session_flag})
+
+@page_router.get("/settings/usr")
+def get_edit_login_page(request: Request, session_flag:Annotated[int,Depends(session_exist)]):
+    if not session_flag:
+        return RedirectResponse("/pages/auth")
+    return templates.TemplateResponse("ed_usr.html", {"request": request,"session":session_flag})
+
+@page_router.get("/settings/psw")
+def get_edit_login_page(request: Request, session_flag:Annotated[int,Depends(session_exist)]):
+    if not session_flag:
+        return RedirectResponse("/pages/auth")
+    return templates.TemplateResponse("ed_psw.html", {"request": request,"session":session_flag})
+
+@page_router.get("/settings/eml")
+def get_edit_login_page(request: Request, session_flag:Annotated[int,Depends(session_exist)]):
+    if not session_flag:
+        return RedirectResponse("/pages/auth")
+    return templates.TemplateResponse("ed_email.html", {"request": request,"session":session_flag})

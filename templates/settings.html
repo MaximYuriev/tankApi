@@ -4,4 +4,16 @@
 {% endblock %}
 
 {% block content %}
+    <div class="flex">
+        <div class="text-2xl text-left fixed h-screen w-64 border-r-2">
+            <a href="/pages/settings/lgn" class="block pl-2 py-2 hover:bg-gray-200">Изменить логин</a>
+            <a href="/pages/settings/usr" class="block pl-2 py-2 hover:bg-gray-200">Изменить имя пользователя</a>
+            <a href="/pages/settings/psw" class="block pl-2 py-2 hover:bg-gray-200">Изменить пароль</a>
+            <a href="/pages/settings/eml" class="block pl-2 py-2 hover:bg-gray-200">Изменить почту</a>
+        </div>
+    </div>
+    <div id="setting">
+        {% block setting %}
+        {% endblock %}
+    </div>
 {% endblock %}
