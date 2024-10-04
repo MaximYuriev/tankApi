@@ -1,0 +1,41 @@
+{% extends "settings.html" %}
+
+{% block head %}
+    <script>
+        window.addEventListener('submit', () => {
+            event.preventDefault();
+            handleSubmit();
+        });
+
+        const handleSubmit = async () =>{
+            oldPasswordFromInput = document.getElementById('oldPassword').value;
+            newPasswordFromInput = document.getElementById('newPassword').value;
+            const values = {
+                old_password: oldPasswordFromInput,
+                new_password: newPasswordFromInput,
+            }
+            const response = await fetch("http://localhost:8000/user/edit/password", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(values)
+            })
+            if (response.status == 200)
+                console.log("Success")
+        }
+    </script>
+{% endblock %}
+
+{% block setting %}
+    <form class="text-3xl mx-auto max-w-fit pt-2" id="pswform">
+        <h1 class="text-5xl pb-9">Изменить пароль</h1>
+
+        <label for="oldPassword">Старый пароль:</label>
+        <input id="oldPassword" class="block mb-5 border-2" type="password" placeholder="Введите старый пароль" required>
+
+        <label for="newPassword">Новый пароль:</label>
+        <input id="newPassword" class="block mb-3 border-2" type="password" placeholder="Введите новый пароль" required>
+        <div class="text-center">
+            <button type="submit" class="rounded-md bg-stone-600 hover:bg-stone-700 text-3xl mt-5 text-white font-medium px-5 py-2.5">Изменить</button>
+        </div>
+    </form>
+{% endblock %}

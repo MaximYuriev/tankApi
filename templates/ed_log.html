@@ -1,0 +1,41 @@
+{% extends "settings.html" %}
+
+{% block head %}
+    <script>
+        window.addEventListener('submit', () => {
+            event.preventDefault();
+            handleSubmit();
+        });
+
+        const handleSubmit = async () =>{
+            oldLoginFromInput = document.getElementById('oldLogin').value;
+            newLoginFromInput = document.getElementById('newLogin').value;
+            const values = {
+                old_login: oldLoginFromInput,
+                new_login: newLoginFromInput,
+            }
+            const response = await fetch("http://localhost:8000/user/edit/login", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(values)
+            })
+            if (response.status == 200)
+                console.log("Success")
+        }
+    </script>
+{% endblock %}
+
+{% block setting %}
+    <form class="text-3xl mx-auto max-w-fit pt-2" id="logform">
+        <h1 class="text-5xl pb-9">Изменить логин</h1>
+
+        <label for="oldLogin">Старый логин:</label>
+        <input id="oldLogin" class="block mb-5 border-2" type="text" placeholder="Введите старый логин" required>
+
+        <label for="newLogin">Новый логин:</label>
+        <input id="newLogin" class="block mb-3 border-2" type="text" placeholder="Введите новый логин" required>
+        <div class="text-center">
+            <button type="submit" class="rounded-md bg-stone-600 hover:bg-stone-700 text-3xl mt-5 text-white font-medium px-5 py-2.5">Изменить</button>
+        </div>
+    </form>
+{% endblock %}

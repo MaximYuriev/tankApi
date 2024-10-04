@@ -6,6 +6,7 @@ import uvicorn
 
 from routers.auth import auth_router
 from routers.game import game_router
+from routers.user import user_router
 from pages.router import page_router
 
 
@@ -25,6 +26,7 @@ app = FastAPI(lifespan=lifespan)
 
 app.include_router(auth_router)
 app.include_router(game_router)
+app.include_router(user_router)
 app.include_router(page_router)
 
 

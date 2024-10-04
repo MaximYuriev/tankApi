@@ -1,0 +1,34 @@
+{% extends "settings.html" %}
+
+{% block head %}
+    <script>
+        window.addEventListener('submit', () => {
+            event.preventDefault();
+            handleSubmit();
+        });
+
+        const handleSubmit = async () =>{
+            usernameFromInput = document.getElementById('username').value;
+            const response = await fetch("http://localhost:8000/user/edit/username", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(usernameFromInput)
+            })
+            if (response.status == 200)
+                console.log("Success")
+        }
+    </script>
+{% endblock %}
+
+{% block setting %}
+    <form class="text-3xl mx-auto max-w-fit pt-2" id="usrform">
+        <h1 class="text-5xl pb-9">Изменить имя пользователя</h1>
+
+        <div class="text-center">
+            <label for="username">Новое имя пользователя:</label>
+            <input id="username" class="block mb-5 border-2 mx-auto" type="text" placeholder="Имя пользователя" required>
+
+            <button type="submit" class="rounded-md bg-stone-600 hover:bg-stone-700 text-3xl mt-5 text-white font-medium px-5 py-2.5">Изменить</button>
+        </div>
+    </form>
+{% endblock %}

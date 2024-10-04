@@ -1,0 +1,62 @@
+{% extends "settings.html" %}
+
+{% block head %}
+    <script>
+        window.addEventListener('submit', () => {
+            event.preventDefault();
+        });
+
+        async function EditEmail(){
+            emailFromInput = document.getElementById('email').value;
+            const response = await fetch("http://localhost:8000/user/edit/email", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(emailFromInput)
+            })
+
+            if (response.status == 200){
+                console.log("Code sent");
+                const element = document.getElementById("verifyEmail");
+                let form = document.forms.emailForm;
+                Array.from(form.elements).forEach((input) => {
+                    input.disabled = true;
+                });
+                element.classList.remove('hidden');
+            }
+        }
+
+        async function VerifyEmail() {
+            codeFromInput = +document.getElementById('code').value;
+            const response = await fetch("http://localhost:8000/user/verify_email", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(codeFromInput)
+            })
+            if (response.status == 200)
+                console.log("Success");
+        }
+
+        async function RepeatCode() {
+            const response = await fetch("http://localhost:8000/user/get_verify_code")
+        }
+    </script>
+{% endblock %}
+
+{% block setting %}
+    <form class="text-3xl mx-auto max-w-fit pt-2" id="emlform" onsubmit="EditEmail()" name="emailForm">
+        <h1 class="text-5xl pb-9">Изменить почту</h1>
+
+        <label for="email">Новая почта:</label>
+        <input id="email" class="block mb-5 border-2" type="email" placeholder="Введите почту" required>
+
+        <div class="text-center">
+            <input type="submit" class="rounded-md bg-stone-600 hover:bg-stone-700 text-3xl mt-5 text-white font-medium px-5 py-2.5" value="Изменить">
+        </div>
+    </form>
+    <form class="text-3xl mx-auto max-w-fit pt-2 hidden" id="verifyEmail" onsubmit="VerifyEmail()">
+        <label for="code">Введите код</label>
+        <input id="code" class="block mb-5 border-2" type="text" placeholder="Введите код" required>
+        <button type="submit" class="rounded-md bg-stone-600 hover:bg-stone-700 text-3xl mt-5 text-white font-medium px-5 py-2.5">Отправить</button>
+        <button type="button" class="rounded-md bg-stone-600 hover:bg-stone-700 text-3xl mt-5 text-white font-medium px-5 py-2.5" onclick="RepeatCode()">Повтор</button>
+    </form>
+{% endblock %}
